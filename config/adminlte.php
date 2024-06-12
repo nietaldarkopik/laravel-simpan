@@ -351,25 +351,25 @@ return [
             "submenu" => [
                 [
                     //"url" => "admin.psu",
-                    "route" => "admin.psu.index",
+                    "route" => "admin.pengajuan.create",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "Buat Pengajuan",
                 ],
                 [
                     //"url" => "admin.psu",
-                    "route" => "admin.psu.index",
+                    "route" => "admin.pengajuan.index",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "Tracking Pengajuan",
                 ],
                 [
                     //"url" => "admin.psu",
-                    "route" => "admin.psu.index",
+                    "route" => "admin.riwayat.index",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "Riwayat Pengajuan",
                 ],
                 [
                     //"url" => "admin.psu",
-                    "route" => "admin.psu.index",
+                    "route" => "admin.laporan.index",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "Laporan",
                 ],
@@ -382,14 +382,14 @@ return [
             /* "icon" => "right fas fa-angle-left", */
             "submenu" => [
                 [
-                    //"url" => "admin.perumahan",
-                    "route" => "admin.perumahan.index",
+                    //"url" => "admin.pengajuan",
+                    "route" => "admin.unit.index",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "Unit",
                 ],
                 [
                     //"url" => "admin.kabupaten-kota",
-                    "route" => "admin.kabupaten-kota.index",
+                    "route" => "admin.sop.index",
                     "icon" => "far fa-circle nav-icon",
                     "text" => "SOP",
                 ],

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\PengajuanModel;
 use App\DataTables\PengajuansDataTable;
 use App\Models\PengajuanDokumenModel;
-use App\Models\SopModel;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -19,7 +18,7 @@ use Auth;
 use Str;
 use PDF;
 
-class PengajuanController extends Controller
+class LaporanController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -41,6 +40,12 @@ class PengajuanController extends Controller
         return $dataTable->render('vendor.adminlte.pengajuans.index');
     }
 
+    public function indexxx(Request $request)
+    {
+        $pengajuans = PengajuanModel::orderBy('id', 'DESC')->paginate(20);
+        return view('vendor.adminlte.pengajuans.index', compact('pengajuans'));
+    }
+
     public function getData(Request $request)
     {
         $pengajuans = PengajuanModel::orderBy('id', 'DESC')->paginate(20);
@@ -49,12 +54,10 @@ class PengajuanController extends Controller
 
     public function create(Request $request)
     {
-        $sop = SopModel::get();
-
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-create', compact('sop'));
+            return view('vendor.adminlte.pengajuans.form-create', compact('kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.create', compact('sop'));
+            return view('vendor.adminlte.pengajuans.create', compact('kategoriPsus'));
         }
     }
 
@@ -187,12 +190,11 @@ class PengajuanController extends Controller
     public function show($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-show', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-show', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.show', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.show', compact('pengajuan', 'kategoriPsus'));
         }
     }
 
@@ -200,113 +202,104 @@ class PengajuanController extends Controller
     public function peta($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-peta', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-peta', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.peta', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.peta', compact('pengajuan', 'kategoriPsus'));
         }
     }
     
     public function psu($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-psu', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-psu', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.psu', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.psu', compact('pengajuan', 'kategoriPsus'));
         }
     }
     
     public function print($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-print', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-print', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.print', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.print', compact('pengajuan', 'kategoriPsus'));
         }
     }
     
     public function document($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-document', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-document', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.document', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.document', compact('pengajuan', 'kategoriPsus'));
         }
     }
     
     public function pdf($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
-        $pdf = PDF::loadView('vendor.adminlte.pengajuans.pdf', compact('pengajuan', 'sop'))->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf = PDF::loadView('vendor.adminlte.pengajuans.pdf', compact('pengajuan', 'kategoriPsus'))->setOptions(['defaultFont' => 'sans-serif']);
 
         return $pdf->download(Str::kebab($pengajuan->nama_percumahan).'.pdf');
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-print', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-print', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.print', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.print', compact('pengajuan', 'kategoriPsus'));
         }
     }
 
     public function edit($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-edit', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-edit', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.edit', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.edit', compact('pengajuan', 'kategoriPsus'));
         }
     }
 
     public function psuDetail($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-psu-detail', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-psu-detail', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.psu-detail', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.psu-detail', compact('pengajuan', 'kategoriPsus'));
         }
     }
     
     public function formUploadPeta($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-upload-peta', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-upload-peta', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.upload-peta', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.upload-peta', compact('pengajuan', 'kategoriPsus'));
         }
     }
 
     public function formUploadDokumen($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-upload-dokumen', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-upload-dokumen', compact('pengajuan', 'kategoriPsus'));
         }else{
-            return view('vendor.adminlte.pengajuans.upload-dokumen', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.upload-dokumen', compact('pengajuan', 'kategoriPsus'));
         }
     }
 
