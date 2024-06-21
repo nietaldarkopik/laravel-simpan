@@ -32,20 +32,20 @@
                 @csrf
                 @method('patch')
                 <div class="row">
-                    <div class="col-xs-12 mb-3">
+                    <div class="col-sm-12 mb-3">
                         <div class="form-group">
                             <strong>Name:</strong>
                             <input type="text" value="{{ $role->name }}" name="name" class="form-control"
                                 placeholder="Name">
                         </div>
                     </div>
-                    <div class="col-xs-12">
+                    <div class="col-sm-12">
                         <div class="form-group">
                             <strong>Permission:</strong>
                         </div>
                     </div>
                     @foreach ($permission as $value)
-                        <div class="col-xs-12 col-sm-4 col-md-3">
+                        <div class="col-sm-4 col-md-3">
                             <label>
                                 <input type="checkbox" @if (in_array($value->id, $rolePermissions)) checked @endif name="permission[]"
                                     value="{{ $value->name }}" class="name">
@@ -53,7 +53,7 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="col-xs-12 mb-3 text-center">
+                <div class="col-sm-12 mb-3 text-center">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-save" aria-hidden="true"></i> Simpan
                     </button>

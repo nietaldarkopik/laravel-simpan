@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Waktu pembuatan: 12 Jun 2024 pada 01.44
+-- Host: 127.0.0.1:3306
+-- Waktu pembuatan: 12 Jun 2024 pada 21.08
 -- Versi server: 10.6.5-MariaDB
 -- Versi PHP: 8.1.0
 
@@ -27,11 +27,14 @@ SET time_zone = "+00:00";
 -- Struktur dari tabel `contents`
 --
 
-CREATE TABLE `contents` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `contents`;
+CREATE TABLE IF NOT EXISTS `contents` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_content_type` bigint(20) UNSIGNED NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `slug` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contents_id_content_type_foreign` (`id_content_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -40,10 +43,13 @@ CREATE TABLE `contents` (
 -- Struktur dari tabel `content_types`
 --
 
-CREATE TABLE `content_types` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `content_types`;
+CREATE TABLE IF NOT EXISTS `content_types` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL
+  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `content_types_code_unique` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -52,14 +58,17 @@ CREATE TABLE `content_types` (
 -- Struktur dari tabel `failed_jobs`
 --
 
-CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `failed_jobs`;
+CREATE TABLE IF NOT EXISTS `failed_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uuid` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -68,12 +77,17 @@ CREATE TABLE `failed_jobs` (
 -- Struktur dari tabel `menus`
 --
 
-CREATE TABLE `menus` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `menus`;
+CREATE TABLE IF NOT EXISTS `menus` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `menu_group_id` bigint(20) UNSIGNED DEFAULT NULL,
   `parent_id` bigint(20) UNSIGNED DEFAULT NULL,
   `code` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL
+  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `menus_code_unique` (`code`),
+  KEY `menus_menu_group_id_foreign` (`menu_group_id`),
+  KEY `menus_parent_id_foreign` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -82,10 +96,13 @@ CREATE TABLE `menus` (
 -- Struktur dari tabel `menu_groups`
 --
 
-CREATE TABLE `menu_groups` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `menu_groups`;
+CREATE TABLE IF NOT EXISTS `menu_groups` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL
+  `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `menu_groups_code_unique` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -94,11 +111,13 @@ CREATE TABLE `menu_groups` (
 -- Struktur dari tabel `migrations`
 --
 
-CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `migrations`;
+CREATE TABLE IF NOT EXISTS `migrations` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `migration` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `migrations`
@@ -135,11 +154,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- Struktur dari tabel `model_has_permissions`
 --
 
-CREATE TABLE `model_has_permissions` (
+DROP TABLE IF EXISTS `model_has_permissions`;
+CREATE TABLE IF NOT EXISTS `model_has_permissions` (
   `permission_id` bigint(20) UNSIGNED NOT NULL,
   `model_type` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL,
-  `team_id` bigint(20) UNSIGNED DEFAULT NULL
+  `team_id` bigint(20) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`permission_id`,`model_id`,`model_type`) USING BTREE,
+  KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -148,11 +170,14 @@ CREATE TABLE `model_has_permissions` (
 -- Struktur dari tabel `model_has_roles`
 --
 
-CREATE TABLE `model_has_roles` (
+DROP TABLE IF EXISTS `model_has_roles`;
+CREATE TABLE IF NOT EXISTS `model_has_roles` (
   `role_id` bigint(20) UNSIGNED NOT NULL,
   `model_type` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL,
-  `team_id` bigint(20) UNSIGNED DEFAULT NULL
+  `team_id` bigint(20) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`role_id`,`model_id`,`model_type`) USING BTREE,
+  KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
@@ -168,14 +193,17 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`, `team_id`) V
 -- Struktur dari tabel `pages`
 --
 
-CREATE TABLE `pages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `pages`;
+CREATE TABLE IF NOT EXISTS `pages` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `title` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `slug` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `slug` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pages_code_unique` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -184,10 +212,12 @@ CREATE TABLE `pages` (
 -- Struktur dari tabel `password_resets`
 --
 
-CREATE TABLE `password_resets` (
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE IF NOT EXISTS `password_resets` (
   `email` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -196,10 +226,12 @@ CREATE TABLE `password_resets` (
 -- Struktur dari tabel `password_reset_tokens`
 --
 
-CREATE TABLE `password_reset_tokens` (
+DROP TABLE IF EXISTS `password_reset_tokens`;
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
   `email` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -208,8 +240,9 @@ CREATE TABLE `password_reset_tokens` (
 -- Struktur dari tabel `pengajuan`
 --
 
-CREATE TABLE `pengajuan` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `pengajuan`;
+CREATE TABLE IF NOT EXISTS `pengajuan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_sop` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_unit` int(11) NOT NULL,
@@ -219,7 +252,8 @@ CREATE TABLE `pengajuan` (
   `status` char(30) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -228,13 +262,15 @@ CREATE TABLE `pengajuan` (
 -- Struktur dari tabel `pengajuan_dokumen`
 --
 
-CREATE TABLE `pengajuan_dokumen` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `pengajuan_dokumen`;
+CREATE TABLE IF NOT EXISTS `pengajuan_dokumen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_pengajuan` int(11) NOT NULL,
   `nama` char(150) NOT NULL,
   `file` char(200) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp()
+  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -243,8 +279,9 @@ CREATE TABLE `pengajuan_dokumen` (
 -- Struktur dari tabel `pengajuan_progress`
 --
 
-CREATE TABLE `pengajuan_progress` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `pengajuan_progress`;
+CREATE TABLE IF NOT EXISTS `pengajuan_progress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_pengajuan` int(11) NOT NULL,
   `id_sop` int(11) NOT NULL,
   `id_sop_step` int(11) NOT NULL,
@@ -253,7 +290,8 @@ CREATE TABLE `pengajuan_progress` (
   `status` char(30) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
-  `tanggal_update` date DEFAULT NULL
+  `tanggal_update` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -262,13 +300,16 @@ CREATE TABLE `pengajuan_progress` (
 -- Struktur dari tabel `permissions`
 --
 
-CREATE TABLE `permissions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `guard_name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=506 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data untuk tabel `permissions`
@@ -383,8 +424,9 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 -- Struktur dari tabel `personal_access_tokens`
 --
 
-CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `personal_access_tokens`;
+CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `tokenable_type` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -393,7 +435,10 @@ CREATE TABLE `personal_access_tokens` (
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
+  KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -402,14 +447,18 @@ CREATE TABLE `personal_access_tokens` (
 -- Struktur dari tabel `roles`
 --
 
-CREATE TABLE `roles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `team_id` bigint(20) UNSIGNED DEFAULT NULL,
   `name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `guard_name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `roles_team_id_name_guard_name_unique` (`team_id`,`name`,`guard_name`),
+  KEY `roles_team_foreign_key_index` (`team_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data untuk tabel `roles`
@@ -424,9 +473,12 @@ INSERT INTO `roles` (`id`, `team_id`, `name`, `guard_name`, `created_at`, `updat
 -- Struktur dari tabel `role_has_permissions`
 --
 
-CREATE TABLE `role_has_permissions` (
+DROP TABLE IF EXISTS `role_has_permissions`;
+CREATE TABLE IF NOT EXISTS `role_has_permissions` (
   `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `role_id` bigint(20) UNSIGNED NOT NULL
+  `role_id` bigint(20) UNSIGNED NOT NULL,
+  PRIMARY KEY (`permission_id`,`role_id`),
+  KEY `role_has_permissions_role_id_foreign` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
@@ -542,10 +594,12 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 -- Struktur dari tabel `settings`
 --
 
-CREATE TABLE `settings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE IF NOT EXISTS `settings` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -554,12 +608,14 @@ CREATE TABLE `settings` (
 -- Struktur dari tabel `sops`
 --
 
-CREATE TABLE `sops` (
-  `id` int(1) NOT NULL,
+DROP TABLE IF EXISTS `sops`;
+CREATE TABLE IF NOT EXISTS `sops` (
+  `id` int(1) NOT NULL AUTO_INCREMENT,
   `sop` varchar(56) DEFAULT NULL,
   `prosedur` varchar(433) DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data untuk tabel `sops`
@@ -652,13 +708,15 @@ INSERT INTO `sops` (`id`, `sop`, `prosedur`, `deleted_at`) VALUES
 -- Struktur dari tabel `sop_steps`
 --
 
-CREATE TABLE `sop_steps` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `sop_steps`;
+CREATE TABLE IF NOT EXISTS `sop_steps` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `sop_id` int(2) DEFAULT NULL,
   `unit_id` int(1) DEFAULT NULL,
   `sort_order` int(1) DEFAULT NULL,
-  `keterangan` varchar(99) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `keterangan` varchar(99) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=395 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data untuk tabel `sop_steps`
@@ -1066,13 +1124,15 @@ INSERT INTO `sop_steps` (`id`, `sop_id`, `unit_id`, `sort_order`, `keterangan`) 
 -- Struktur dari tabel `units`
 --
 
-CREATE TABLE `units` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `units`;
+CREATE TABLE IF NOT EXISTS `units` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(20) DEFAULT NULL,
   `parent_code` varchar(20) DEFAULT NULL,
   `nama` varchar(51) DEFAULT NULL,
-  `keterangan` varchar(36) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `keterangan` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data untuk tabel `units`
@@ -1138,16 +1198,19 @@ INSERT INTO `units` (`id`, `code`, `parent_code`, `nama`, `keterangan`) VALUES
 -- Struktur dari tabel `users`
 --
 
-CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data untuk tabel `users`
@@ -1155,277 +1218,6 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'Admin istrator', 'nietaldarkopik@gmail.com', NULL, '$2y$12$itG81kZR7ueYsn1esoqAFu29bCpit8pdNdfy1gexnYVoSfZfdylxK', NULL, '2024-06-11 09:21:47', '2024-06-11 09:21:47');
-
---
--- Indexes for dumped tables
---
-
---
--- Indeks untuk tabel `contents`
---
-ALTER TABLE `contents`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `contents_id_content_type_foreign` (`id_content_type`);
-
---
--- Indeks untuk tabel `content_types`
---
-ALTER TABLE `content_types`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `content_types_code_unique` (`code`);
-
---
--- Indeks untuk tabel `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
-
---
--- Indeks untuk tabel `menus`
---
-ALTER TABLE `menus`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `menus_code_unique` (`code`),
-  ADD KEY `menus_menu_group_id_foreign` (`menu_group_id`),
-  ADD KEY `menus_parent_id_foreign` (`parent_id`);
-
---
--- Indeks untuk tabel `menu_groups`
---
-ALTER TABLE `menu_groups`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `menu_groups_code_unique` (`code`);
-
---
--- Indeks untuk tabel `migrations`
---
-ALTER TABLE `migrations`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `model_has_permissions`
---
-ALTER TABLE `model_has_permissions`
-  ADD PRIMARY KEY (`permission_id`,`model_id`,`model_type`) USING BTREE,
-  ADD KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`);
-
---
--- Indeks untuk tabel `model_has_roles`
---
-ALTER TABLE `model_has_roles`
-  ADD PRIMARY KEY (`role_id`,`model_id`,`model_type`) USING BTREE,
-  ADD KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`);
-
---
--- Indeks untuk tabel `pages`
---
-ALTER TABLE `pages`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `pages_code_unique` (`code`);
-
---
--- Indeks untuk tabel `password_resets`
---
-ALTER TABLE `password_resets`
-  ADD KEY `password_resets_email_index` (`email`);
-
---
--- Indeks untuk tabel `password_reset_tokens`
---
-ALTER TABLE `password_reset_tokens`
-  ADD PRIMARY KEY (`email`);
-
---
--- Indeks untuk tabel `pengajuan`
---
-ALTER TABLE `pengajuan`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `pengajuan_dokumen`
---
-ALTER TABLE `pengajuan_dokumen`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `pengajuan_progress`
---
-ALTER TABLE `pengajuan_progress`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `permissions`
---
-ALTER TABLE `permissions`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`);
-
---
--- Indeks untuk tabel `personal_access_tokens`
---
-ALTER TABLE `personal_access_tokens`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
-  ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
-
---
--- Indeks untuk tabel `roles`
---
-ALTER TABLE `roles`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `roles_team_id_name_guard_name_unique` (`team_id`,`name`,`guard_name`),
-  ADD KEY `roles_team_foreign_key_index` (`team_id`);
-
---
--- Indeks untuk tabel `role_has_permissions`
---
-ALTER TABLE `role_has_permissions`
-  ADD PRIMARY KEY (`permission_id`,`role_id`),
-  ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
-
---
--- Indeks untuk tabel `settings`
---
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `sops`
---
-ALTER TABLE `sops`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `sop_steps`
---
-ALTER TABLE `sop_steps`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `units`
---
-ALTER TABLE `units`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
-
---
--- AUTO_INCREMENT untuk tabel yang dibuang
---
-
---
--- AUTO_INCREMENT untuk tabel `contents`
---
-ALTER TABLE `contents`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `content_types`
---
-ALTER TABLE `content_types`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `menus`
---
-ALTER TABLE `menus`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `menu_groups`
---
-ALTER TABLE `menu_groups`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `migrations`
---
-ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
-
---
--- AUTO_INCREMENT untuk tabel `pages`
---
-ALTER TABLE `pages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `pengajuan`
---
-ALTER TABLE `pengajuan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `pengajuan_dokumen`
---
-ALTER TABLE `pengajuan_dokumen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `pengajuan_progress`
---
-ALTER TABLE `pengajuan_progress`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `permissions`
---
-ALTER TABLE `permissions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=506;
-
---
--- AUTO_INCREMENT untuk tabel `personal_access_tokens`
---
-ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `roles`
---
-ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT untuk tabel `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `sops`
---
-ALTER TABLE `sops`
-  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
-
---
--- AUTO_INCREMENT untuk tabel `sop_steps`
---
-ALTER TABLE `sop_steps`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=395;
-
---
--- AUTO_INCREMENT untuk tabel `units`
---
-ALTER TABLE `units`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
-
---
--- AUTO_INCREMENT untuk tabel `users`
---
-ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

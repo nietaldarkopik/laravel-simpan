@@ -32,40 +32,65 @@
 {{-- @section('plugins.TempusdominusBootstrap4', true)
 @section('plugins.Toastr', true) --}}
 
-@section('title', 'Data Pengajuan')
+@section('title', 'Tracking Pengajuan')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Data Pengajuan</h1>
+    <h1 class="m-0 text-dark">Tracking Pengajuan</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title fw-bold fs-4">Data Pengajuan</h2>
+            <h2 class="card-title fw-bold fs-4">Tracking Pengajuan</h2>
             <div class="card-tools">
-                @can('admin.pengajuan.create')
+                {{-- @can('admin.pengajuan.create')
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.pengajuan.create') }}" data-toggle="modal" data-target="#modalLgId" data-modal-title="Tambah Data">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah
                     </a>
-                @endcan
+                @endcan --}}
             </div>
         </div>
         <div class="card-header py-1">
             <div class="form-row mb-0 d-flex justify-content-stretch">
-                <div class="form-group mb-0 col-sm-1">
-                    Filter Data :
-                </div>
+                <div class="form-group mb-0 col-sm-1 justify-content-center d-flex flex-column pt-2">
+                    <strong class="h5 font-weight-bold mb-0">Filter Data :</strong>
+				</div>
+			</div>
+			<div class="form-row mb-0 d-flex justify-content-stretch">
                 <div class="form-group mb-0 col-sm-2">
-                    {{-- <label for="" class="form-label">Pengajuan</label> --}}
+                    <label for="" class="form-label">Jenis Pengajuan</label>
                     <select class="form-select form-select-sm custom-select custom-select-sm input-filter" name="filter[kabkota_id]" id="filter-kabkota_id">
-                        <option value="" selected>Kabupaten / Kota ...</option>
-                        {{-- @foreach(App\Models\KabupatenKotaModel::where('province_id',63)->get() as $d)
-                        <option value="{{$d->id}}">{{ $d->name }}</option>
-                        @endforeach                         --}}
+                        <option value="" selected>Jenis Pengajuan ...</option>
                     </select>
                 </div>
+                <div class="form-group mb-0 col-sm-2">
+                    <label for="" class="form-label">Dari Unit</label>
+                    <select class="form-select form-select-sm custom-select custom-select-sm input-filter" name="filter[kabkota_id]" id="filter-kabkota_id">
+                        <option value="" selected>Semua Unit ...</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0 col-sm-2">
+                    <label for="" class="form-label">Kepada Unit</label>
+                    <select class="form-select form-select-sm custom-select custom-select-sm input-filter" name="filter[kabkota_id]" id="filter-kabkota_id">
+                        <option value="" selected>Semua Unit ...</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0 col-sm-2">
+                    <label for="" class="form-label">Status</label>
+                    <select class="form-select form-select-sm custom-select custom-select-sm input-filter" name="filter[kabkota_id]" id="filter-kabkota_id">
+                        <option value="" selected>Status ...</option>
+						@foreach(App\Models\StatusPengajuanModel::all() as $i => $s)
+						<option value="{{$s->kode}}" style="border-color: {{$s->warna_bg}} !important; background-color: {{$s->warna_bg}} !important; color: {{$s->warna_text}} !important;">{{$s->judul}}</option>
+						@endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-0 col-sm-2">
+                    <label for="" class="form-label">Tanggal</label>
+					<input type="text" class="form-control input-filter" name="filter[daterange]" placeholder="Tanggal">
+                </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-sm btn-primary" id="search">
+                    <label for="" class="form-label">Aksi</label>
+                    <button type="button" class="btn btn-sm form-control btn-primary" id="search">
                         <i class="fa fa-search" aria-hidden="true"></i> Cari
                     </button>
                 </div>
@@ -90,7 +115,9 @@
                 </div>
             @endif
 
-            {{ $dataTable->table() }}
+			<div class="table-responsive">
+				{{ $dataTable->table() }}
+			</div>
         </div>
     </div>
 
@@ -228,135 +255,5 @@
         });
     });
     
-    // Fungsi untuk menambahkan file ke daftar
-    function addFileToList(file,clickableElements,response) {
-        response = JSON.parse(response);
-        if(!response.id){
-            return false;
-        }
-        var url = "{{-- {{ route('admin.psuperumahan.getPsuItem',['PsuPengajuan' => 'xx'])}} --}}";
-        var fileListUl = $(clickableElements).closest('.card-psu-list').find('.file-list-psu');
-        url = url.replace('xx',response.id);
-
-        $.ajax({
-            url: url,
-            type: "get",
-            dataType: "html",
-            success:function(msg){
-                $(fileListUl).prepend(msg);
-            }
-        })
-    }
-
-    function savePsuDetail(form,id,callback) {
-        var url = "{{-- {{ route('admin.psuperumahan.updatePsuItem',['PsuPengajuan' => 'xx'])}} --}}";
-        url = url.replace('xx',id);
-
-        form.append('_method','patch');
-
-        $.ajax({
-            url: url,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            data: form,
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            success: callback
-        })
-    }
-
-    function addFileToListDokumen(path,clickableElements,response){
-        // Load GeoJSON data
-        //var geojsonLayer = new L.GeoJSON.AJAX(path); // Ganti path dengan path GeoJSON Anda
-        //geojsonLayer.addTo(map);
-        response = JSON.parse(response);
-        var url = "{{ asset(Storage::url('xxx'))}}";
-        url = url.replace('xxx',response.nama_file);
-        $(".file-list-dokumen").prepend('<li class="list-group-item row d-flex">' +
-                                        '    <div class="col-sm-5">' +
-                                                response.judul_file +
-                                        '    </div>' +
-                                        '    <div class="col-sm-5">' +
-                                                response.judul_file +
-                                        '    </div>' +
-                                        '    <div class="col-sm-2">' +
-                                        '        <a href="' + url + '" target="_blank" class="btn btn-primary btn-sm">' +
-                                        '            <i class="fa fa-eye" aria-hidden="true"></i>' +
-                                        '        </a>' +
-                                        '        <button type="button" class="btn btn-danger btn-sm">' +
-                                        '            <i class="fa fa-trash" aria-hidden="true"></i>' +
-                                        '        </button>' +
-                                        '    </div>' +
-                                        '</li>');
-    }
-
-    function addFileToMap(path,clickableElements,response){
-        // Load GeoJSON data
-        //var geojsonLayer = new L.GeoJSON.AJAX(path); // Ganti path dengan path GeoJSON Anda
-        //geojsonLayer.addTo(map);
-        $(".file-list-map").prepend('<li class="list-group-item">'+path.name+'</li>');
-    }
-
-    function addFileToListMap(path,clickableElements,response){
-        // Load GeoJSON data
-        //var geojsonLayer = new L.GeoJSON.AJAX(path); // Ganti path dengan path GeoJSON Anda
-        //geojsonLayer.addTo(map);
-        $(".file-list-map").prepend('<li class="list-group-item">'+path.name+'</li>');
-    }
-
-    $("body").on("change",".card-psu-item :input",function(){
-        if($(this).closest(".card-psu-item").length > 0)
-        {
-            $(this).closest(".card-psu-item").find(".btn-save-psu-container").removeClass("d-none").addClass("d-flex");
-        }
-    });
-
-    $("body").on("click",".btn-cancel-psu",function(){
-        if($(this).closest(".card-psu-item").length > 0)
-        {
-            $(this).closest(".card-psu-item").find(".btn-save-psu-container").removeClass("d-flex").addClass("d-none");
-        }
-    })
-
-    $("body").on("click",".btn-save-psu",function(){
-        var form = $(this).closest('form')[0];
-        var id = $(this).data('id');
-        var card = $(this).closest(".card-psu-item");
-        formData = new FormData();
-        var input = $(this).closest(".card-psu-item").find(":input");
-        $.each(input,function(i,v){
-            formData.append($(v).attr("name"),$(v).val());
-        });
-        savePsuDetail(formData,id,function(){
-            if($(card).length > 0)
-            {
-                $(card).find(".btn-save-psu-container").removeClass("d-flex").addClass("d-none");
-            }
-            alert("Data Berhasil disimpan");
-        });
-    });
-    
-    $("body").on("click","[name='id_psu']",function(){
-        var id = $(this).data('id');
-        var id_psu = $(this).val();
-        var card = $(this).closest(".card-psu-item");
-        var url = "{{-- {{ route('admin.psuperumahan.getPsuAttributeForm',['PsuPengajuan' => 'xx','PSU' => 'yy'])}} --}}";
-        url = url.replace('xx',id);
-        url = url.replace('yy',id_psu);
-
-        $.ajax({
-            url: url,
-            type: 'get',
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            dataType: 'html',
-            success:function(msg){
-                $(card).find(".attribute-psu-container").html(msg);
-            }
-        })
-    })
 </script>
 @endpush

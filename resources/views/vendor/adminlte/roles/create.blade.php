@@ -6,7 +6,7 @@
     <h1 class="m-0 text-dark">Hak Akses Pengguna</h1>
 @stop
 @section('content')
-    <div class="card col-md-6 mx-auto">
+    <div class="card col-md-12 mx-auto">
         <div class="card-header">
             <h2 class="card-title fw-bold fs-4">Tambah Hak Akses</h2>
             <div class="card-tools">
@@ -44,7 +44,7 @@
                     @foreach ($permission as $value)
                         <div class="col-xs-12 col-sm-4 col-md-3">
                             <label>
-                                <input type="checkbox" name="permission[]" value="{{ $value->id }}" class="name">
+                                <input type="checkbox" name="permission[]" value="{{ $value->name }}" class="name">
                                 {{ $value->name }}</label>
                         </div>
                     @endforeach

@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ route('admin.pengajuan.uploadDokumen', ['perumahan' => $perumahan]) }}"
+            <form action="{{ route('admin.sop.uploadDokumen', ['sop' => $sop]) }}"
                 method="POST" enctype="multipart/form-data">
                 <div class="card text-left card-primary card-ourline border border-primary card-psu-list">
                     <div class="card-header">
@@ -11,12 +11,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="document-dropzone-{{ $perumahan->id }}">Upload File Pendukung</label>
+                                    <label for="document-dropzone-{{ $sop->id }}">Upload Contoh File</label>
                                     <div class="needsclick dropzone dropzone-document dropzonePsu"
-                                        id="document-dropzone-{{ $perumahan->id }}">
-                                        <input type="hidden" class="input-id_perumahan"
-                                        name="id_perumahan"
-                                        value="{{ $perumahan->id }}" placeholder="Perumahan" />
+                                        id="document-dropzone-{{ $sop->id }}">
+                                        <input type="hidden" class="input-id_sop"
+                                        name="id_sop"
+                                        value="{{ $sop->id }}" placeholder="sop" />
                                     </div>
                                 </div>
                             </div>
@@ -26,18 +26,15 @@
                                         <h4 class="card-title">Daftar File</h4>
                                     </div>
                                     <div class="card-body">
-                                        <p class="card-text">Silahkan upload file pendukung lainnya seperti BAST, Siteplan, Hasil Survey dan file lainnya berupa jpg, jpeg, png, pdf, doc, xls atau zip .</p>
-                                        <ul class="list-group list-group-flush file-list-dokumen">
-                                            @foreach (\App\Models\PerumahanDokumenModel::where('id_perumahan','=',$perumahan->id)->get() as $i => $f)
+                                        <p class="card-text">Silahkan upload contoh file pendukung lainnya berupa .doc, .docx, .xls, atau .xlsx</p>
+                                        <ul class="list-group list-group-flushx file-list-dokumen">
+                                            @foreach (\App\Models\SopDokumenModel::where('id_sop','=',$sop->id)->get() as $i => $f)
                                                 <li class="list-group-item row d-flex">
-                                                    <div class="col-sm-5">
-                                                        {{ basename($f->nama_file) }}
-                                                    </div>
-                                                    <div class="col-sm-5">
-                                                        {{ $f->judul_file }}
+                                                    <div class="col-sm-10">
+                                                        {{ basename($f->judul) }}
                                                     </div>
                                                     <div class="col-sm-2">
-                                                        <a href="{{ asset(Storage::url($f->nama_file)) }}" target="_blank" class="btn btn-primary btn-sm">
+                                                        <a href="{{ asset('storage/uploads/sop/'.$f->file) }}" target="_blank" class="btn btn-primary btn-sm">
                                                             <i class="fa fa-eye" aria-hidden="true"></i>
                                                         </a>
                                                         <button type="button" class="btn btn-danger btn-sm">
@@ -57,15 +54,15 @@
         </div>
     </div>
 </div>
-{{-- psuperumahan.storeFromPerumahan
-['perumahan' => $perumahanpsuperumahan.updateFromPerumahan
-psuperumahan.destroyFromPerumahan --}}
+{{-- psusop.storeFromsop
+['sop' => $soppsusop.updateFromsop
+psusop.destroyFromsop --}}
 
 <script>
 
     var uploadedDocumentDokumen = {}
-    const dropzone = new Dropzone("div.my-dropzone", {
-        url: '{{ route('admin.pengajuan.uploadDokumen', ['perumahan' => $perumahan]) }}',
+    $(".dropzone-document").dropzone({
+        url: '{{ route('admin.sop.uploadDokumen', ['sop' => $sop]) }}',
         maxFilesize: 512, // MB
         dataType: "json",
         addRemoveLinks: true,
@@ -75,12 +72,12 @@ psuperumahan.destroyFromPerumahan --}}
         sending: function(file, xhr, formData) {
             //console.log(file, xhr, formData, $(this));
             var form = $(this)[0].clickableElements[0];
-            formData.append("id_perumahan", $(form).find('.input-id_perumahan').val());
+            formData.append("id_sop", $(form).find('.input-id_sop').val());
         },
         success: function(file, response) {
             var form = $(this)[0].clickableElements[0];
-            $(form).append('<input type="hidden" name="document[]" value="' + response.nama_file + '">');
-            uploadedDocumentDokumen[file.name] = response.nama_file;
+            $(form).append('<input type="hidden" name="document[]" value="' + response.file + '">');
+            uploadedDocumentDokumen[file.name] = response.file;
             this.removeFile(file);
             addFileToListDokumen(file,$(this)[0].clickableElements,response);
         },
@@ -111,9 +108,9 @@ psuperumahan.destroyFromPerumahan --}}
                 // Setelah upload berhasil, tambahkan file ke daftar
             }); */
             //console.log(clickableElements);
-            {{-- @if (isset($psuperumahan) && $psuperumahan->document)
+            {{-- @if (isset($psusop) && $psusop->document)
                 var files =
-                    {!! json_encode($psuperumahan) !!};
+                    {!! json_encode($psusop) !!};
                 for (var i in files) {
                     var file = files[i]
                     this.options.addedfile.call(this, file)

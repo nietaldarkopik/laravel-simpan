@@ -24,7 +24,7 @@ class UsersController extends Controller
    
     public function index(Request $request)
     {
-        $data = User::latest()->paginate(5);
+        $data = User::latest()->paginate(20);
         return view('vendor.adminlte.users.index',compact('data'));
     }
 

@@ -25,7 +25,7 @@
 
     {{-- Menu items --}}
     <ul class="dropdown-menu border-0 shadow">
-        @each('adminlte::partials.navbar.dropdown-item', $item['submenu'], 'item')
+        @each('adminlte::partials.navbar.dropdown-item', App\Models\MenuModel::select(DB::raw('*,"" as class, url as href,title as text'))->where('parent_id',$item['id'])->orderBy('sort_order')->with('submenu')->get()->toArray(), 'item')
     </ul>
 
 </li>

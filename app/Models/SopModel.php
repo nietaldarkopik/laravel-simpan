@@ -15,9 +15,12 @@ class SopModel extends Model
     protected $table = 'sops'; // Nama tabel dalam database
 
     protected $fillable = [
-        'sop','prosedur',
+        'kode','sop','prosedur','created_by','updated_by','created_at','updated_at',
     ];
     
     protected $dates = ['deleted_at'];
 
+	public function step(){
+		return $this->hasMany(SopStepModel::class,'sop_id','id');
+	}
 }

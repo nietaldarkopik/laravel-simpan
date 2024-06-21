@@ -1,5 +1,14 @@
 @extends('adminlte::master')
 
+@php
+if (auth()->user()->hasRole('Admin')) {
+	config(['adminlte.layout_topnav' => false]);
+}else{
+	config(['adminlte.layout_topnav' => true]);
+	config(['adminlte.classes_topnav_container' => 'container']);
+}
+@endphp
+
 @inject('layoutHelper', 'JeroenNoten\LaravelAdminLte\Helpers\LayoutHelper')
 @inject('preloaderHelper', 'JeroenNoten\LaravelAdminLte\Helpers\PreloaderHelper')
 

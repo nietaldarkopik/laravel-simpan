@@ -35,8 +35,7 @@
         :color-disabled="$item['color_disabled'] ?? null"
     />
 
-@elseif ($navbarItemHelper->isSubmenu($item))
-
+@elseif ($navbarItemHelper->isSubmenu($item) and isset($item['submenu']) and is_array($item['submenu']) and count($item['submenu']) > 0)
     {{-- Dropdown menu --}}
     @include('adminlte::partials.navbar.menu-item-dropdown-menu')
 

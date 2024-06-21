@@ -9,7 +9,7 @@
     </div>
 @endif
 
-<form action="{{ route('admin.unit.update', ['unit' => $unit]) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.sop.update', ['sop' => $sop]) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method("patch")
     <div class="row mb-1">
@@ -21,9 +21,10 @@
                     </div>
                 </div>
                 <div class="col-sm-8 p-1">
-                    <input required="required" type="text" name="code" value="{{ $unit?->code }}" maxlength="20"
+                    <input required="required" type="text" name="kode" value="{{ $sop?->kode }}" data-id="{{ $sop?->id }}" maxlength="20"
                         class="form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
                         placeholder="Kode" />
+						<small class="form-text text-muted response-check-kode"></small>
                 </div>
             </div>
         </div>
@@ -34,34 +35,13 @@
             <div class="row">
                 <div class="col-sm-4 p-0 bg-secondary text-white px-1 d-flex justify-content-start align-items-center">
                     <div class="form-group mb-0">
-                        <span>Nama Unit</span>
+                        <span>Nama SOP</span>
                     </div>
                 </div>
                 <div class="col-sm-8 p-1">
-                    <input required="required" type="text" name="nama" value="{{ $unit?->nama }}" maxlength="20"
+                    <input required="required" type="text" name="sop" value="{{ $sop?->sop }}"
                         class="form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
-                        placeholder="Nama Unit" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-1">
-        <div class="col-xs-12 col-sm-12 border">
-            <div class="row">
-                <div class="col-sm-4 p-0 bg-secondary text-white px-1 d-flex justify-content-start align-items-center">
-                    <div class="form-group mb-0">
-                        <span>Induk Unit</span>
-                    </div>
-                </div>
-                <div class="col-sm-8 p-1">
-                    <select class="form-select form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
-                        name="parent_code">
-                        <option value="0">Utama ...</option>
-                        @foreach(\App\Models\UnitModel::orderBy('code','asc')->where('id','!=',$unit?->id)->orderBy('parent_code','asc')->get() as $i => $d)
-                        <option value="{{ $d->code }}" @selected($d->code == $d->parent_code)>{{ $d->code . ' - ' . $d->nama}}</option>
-                        @endforeach
-                    </select>
+                        placeholder="Nama SOP" />
                 </div>
             </div>
         </div>
@@ -72,13 +52,13 @@
             <div class="row">
                 <div class="col-sm-12 p-0 bg-secondary text-white px-1 d-flex justify-content-start align-items-center">
                     <div class="form-group mb-0">
-                        <span>Keterangan</span>
+                        <span>Prosedur</span>
                     </div>
                 </div>
                 <div class="col-sm-12 p-1">
-                    <textarea name="keterangan" rows="6"
+                    <textarea name="prosedur" rows="6"
                         class="form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
-                        placeholder="Keterangan">{{ $unit?->keterangan }}</textarea>
+                        placeholder="Prosedur">{{ $sop?->prosedur }}</textarea>
                 </div>
             </div>
         </div>

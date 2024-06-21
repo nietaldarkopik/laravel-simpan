@@ -75,6 +75,7 @@
                     </tbody>
                 </table>
             </div>
+            {!! $data->render() !!}
         </div>
     </div>
 @endsection

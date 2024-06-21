@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/si-psu/'),
+    'url' => env('APP_URL', 'http://localhost/laravel-simpan/'),
 
     'asset_url' => env('ASSET_URL'),
 

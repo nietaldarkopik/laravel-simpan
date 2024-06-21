@@ -18,11 +18,22 @@
         </button>
 
         {{-- Navbar collapsible menu --}}
-        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+        <div class="collapse navbar-collapse order-3 justify-content-end" id="navbarCollapse">
             {{-- Navbar left links --}}
             <ul class="nav navbar-nav">
                 {{-- Configured left links --}}
-                @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item')
+				{{-- @dd($adminlte->menu('navbar-left'),App\Models\MenuModel::select(DB::raw('*,url as href,title as text'))->where('parent_id',0)->orderBy('sort_order')->with('submenu')->get()->toArray()); --}}
+                {{-- @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item') --}}
+				@php
+				$roles = Auth()->user()->roles->collect()->pluck('name')->toArray();
+				$menu_group = DB::table('menu_groups')->whereIn('role',$roles)->get();
+				$menu_group_ids = $menu_group?->collect()->pluck('id');
+				@endphp
+				
+                @each('adminlte::partials.navbar.menu-item', App\Models\MenuModel::select(DB::raw('*,"" as class, url as href,title as text'))->with('submenu')->where(function($query) use ($menu_group_ids){
+					$query->where('parent_id','=',0);
+					$query->whereIn('menu_group_id',$menu_group_ids);
+				})->orderBy('sort_order')->get()->toArray(), 'item')
 
                 {{-- Custom left links --}}
                 @yield('content_top_nav_left')

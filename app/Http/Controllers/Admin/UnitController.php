@@ -77,6 +77,25 @@ class UnitController extends Controller
             ->with('success', 'Unit berhasil disimpan');
     }
 
+    public function updateSort(Request $request)
+    {
+		$data = $request->input('data');
+		if(is_array($data) and count($data) > 0)
+		{
+			foreach($data as $i => $d)
+			{
+				$unit = UnitModel::find($d['id']);
+				$unit->parent_code = $d['parent_code'];
+				if($d['sort_order'] >= 0)
+				{
+					$unit->sort_order = $d['sort_order'];
+				}
+				$unit->save();
+			}
+		}
+        return response()->json(['message' => 'Data berhasil diperbarui!'], 200);
+    }
+
     public function show($id,Request $request)
     {
         $unit = UnitModel::find($id);

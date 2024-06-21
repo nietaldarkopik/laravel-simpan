@@ -2,8 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\PengajuanModel;
-use App\Models\StatusPengajuanModel;
+use App\Models\SopModel;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -13,9 +12,8 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use Illuminate\Http\Request;
-use Auth;
 
-class PengajuansDataTable extends DataTable
+class SopsDataTable extends DataTable
 {
     //protected $actions = ['print', 'excel'];
 
@@ -27,37 +25,15 @@ class PengajuansDataTable extends DataTable
     public function dataTable(QueryBuilder $query, Request $request): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'vendor.adminlte.pengajuans.datatables_action')
-            ->editColumn('created_at', function (PengajuanModel $pengajuan) {
-                return date('d/m/Y H:i:s', strtotime($pengajuan->created_at));
-            })
-            ->editColumn('updated_at', function (PengajuanModel $pengajuan) {
-                return date('d/m/Y H:i:s', strtotime($pengajuan->updated_at));
-            })
-            ->editColumn('created_by', function (PengajuanModel $pengajuan) {
-				$output = '<strong>'.$pengajuan->createdBy?->name.'</strong><br/>';
-				$output .= $pengajuan->unit->nama;
-                return $output;
-            })
-            ->editColumn('updated_by', function (PengajuanModel $pengajuan) {
-				if(empty($pengajuan->editedBy)){
-					return '';
-				}
-				$output = '<strong>'.$pengajuan->editedBy?->name.'</strong><br/>';
-				$output .= $pengajuan->unit->nama;
-                return $output;
-            })
-            ->editColumn('status', function (PengajuanModel $pengajuan) {
-				$status = StatusPengajuanModel::where('kode','like',$pengajuan->status)->first();
-				$bg = isset($status->warna_bg) ? $status->warna_bg: '#ccc';
-				$text = isset($status->warna_text) ? $status->warna_text: '#000';
-				$style = ' style="border-color: '.$bg.' !important; background-color: '.$bg.' !important; color: '.$text.' !important;" ';
-				$output = '<span class="btn btn-primary" '.$style.'>'.($status->judul ?? $pengajuan->status ?? 'Tidak Diketahui').'</span>';
-                return $output;
-            })
-			->rawColumns(['created_by','action','updated_by','status'])
-            /* ->editColumn('kategori', function (PengajuanModel $pengajuan) {
-                return $pengajuan->getKategori()->first()?->title;
+            ->addColumn('action', 'vendor.adminlte.sops.datatables_action')
+            /* ->addColumn('prosedur', function($content){
+				return nl2br($content->prosedur);
+			}) */
+            /* ->addColumn('getKategori', function (SopModel $perumahan) {
+                return $perumahan->getKategori->title;
+            }) */
+            /* ->editColumn('kategori', function (SopModel $perumahan) {
+                return $perumahan->getKategori()->first()?->title;
             }) 
             ->filterColumn('kategori', function ($query, $keywords) use ($request) {
                 $query->where('kategori','like','%'.$keywords.'%');
@@ -68,23 +44,10 @@ class PengajuansDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(PengajuanModel $model,Request $request): QueryBuilder
+    public function query(SopModel $model,Request $request): QueryBuilder
     {
         $q =  $model->newQuery();
-
-        $columns = $request->columns ?? [];
-        if (count($columns) > 0) {
-            foreach ($columns as $i => $c) {
-                $q->where(function($query) use ($c) {
-					if(isset($c['search']['value']))
-					{
-						$query->orWhere($c['data'], 'like', $c['search']['value']);
-					}
-                });
-            }
-        }
-
-        return $q->where('id_user','=',Auth::user()->id)->orderBy('id','desc');
+        return $q->orderBy('id','desc');
         //return $model->newQuery();
     }
 
@@ -94,7 +57,7 @@ class PengajuansDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('pengajuans-table')
+            ->setTableId('perumahans-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->buttons([
@@ -123,7 +86,7 @@ class PengajuansDataTable extends DataTable
             ->parameters([
                 'drawCallback' => 'function() { $(\'[data-tooltip]\').tooltip({}); }',
                 'initComplete' => 'function () {
-                    /* window.LaravelDataTables["pengajuans-table"].buttons().container()
+                    /* window.LaravelDataTables["perumahans-table"].buttons().container()
                      .appendTo( ".justify-content-stretch") */
                  }',
                 'responsive' => [
@@ -167,18 +130,12 @@ class PengajuansDataTable extends DataTable
             ->width(50)
             ->orderable(false)
             ->searchable(false),
-			//Column::make('id_sop')->title('Jenis Pengajuan')->searchable(true)->visible(true),
-			//Column::make('id_user')->title('User')->searchable(true)->visible(true),
-			//Column::make('id_unit')->title('Unit')->searchable(true)->visible(true),
-			Column::make('judul')->title('Judul')->searchable(true)->visible(true),
-			Column::make('nominal')->title('Jml. Pengajuan')->searchable(true)->visible(true),
-			Column::make('created_by')->title('Dibuat Oleh')->searchable(true)->visible(true),
-			Column::make('updated_by')->title('Diedit Oleh')->searchable(true)->visible(true),
-			Column::make('tgl_pengajuan')->title('Tgl. Pengajuan')->searchable(true)->visible(true),
-			Column::make('created_at')->title('Tgl. Dibuat')->searchable(true)->visible(true),
-			Column::make('updated_at')->title('Tgl. Diedit')->searchable(true)->visible(true),
-			Column::make('status')->title('Status')->searchable(true)->visible(true)->className('text-center'),
-			
+			Column::make('kode')->title('Kode')->searchable(true)->visible(true),
+			Column::make('sop')->title('SOP')->searchable(true)->visible(true),
+			Column::make('created_by')->title('Pembuat')->searchable(true)->visible(true),
+			Column::make('updated_by')->title('Pengedit')->searchable(true)->visible(true),
+			Column::make('created_at')->title('Tanggal Upload')->searchable(true)->visible(true),
+			Column::make('updated_at')->title('Tanggal Update')->searchable(true)->visible(true),
         ];
     }
 
@@ -187,7 +144,7 @@ class PengajuansDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Pengajuans_' . date('YmdHis');
+        return 'Sops_' . date('YmdHis');
     }
 
 }

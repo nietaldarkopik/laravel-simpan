@@ -32,19 +32,19 @@
 {{-- @section('plugins.Summernote', false) --}}
 {{-- @section('plugins.TempusdominusBootstrap4', false) --}}
 
-@section('title', 'Data Unit')
+@section('title', 'Data SOP')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Data Unit</h1>
+    <h1 class="m-0 text-dark">Data SOP</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title fw-bold fs-4">Data Unit</h2>
+            <h2 class="card-title fw-bold fs-4">Data SOP</h2>
             <div class="card-tools">
-                @can('admin.unit.create')
-                    <a class="btn btn-sm btn-primary" href="{{ route('admin.unit.create') }}" data-toggle="modal"
+                @can('admin.sop.create')
+                    <a class="btn btn-sm btn-primary" href="{{ route('admin.sop.create') }}" data-toggle="modal"
                         data-target="#modalLgId" data-modal-title="Tambah Data">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah
                     </a>
@@ -70,7 +70,7 @@
                 </div>
             @endif
 			
-			@include('vendor.adminlte.partials.widgets.accordion',['data' => \App\Models\UnitModel::where(function($query){
+			@include('vendor.adminlte.partials.widgets.accordion',['data' => \App\Models\SOPModel::where(function($query){
 				$query->whereNull('parent_code');
 				$query->orWhere('parent_code','0');
 			})->orderBy('sort_order','asc')->get(), 'title' => 'nama', 'parent_id' => 'parent_code', 'child_id' => 'code', 'node' => 0, 'node_level' => 0])
@@ -170,14 +170,14 @@
 		}
 
 		function updateOrder(){
-			var data_units = getCustomOrder();
-			console.log(data_units);
-			var url = "{{ route('admin.unit.updateSort')}}";
+			var data_sops = getCustomOrder();
+			console.log(data_sops);
+			var url = "{{ route('admin.sop.updateSort')}}";
 
 			$.ajax({
 				url: url,
 				type: 'post',
-				data: {data: data_units},
+				data: {data: data_sops},
 				headers: {
 					'X-CSRF-TOKEN': "{{ csrf_token() }}",
 				},

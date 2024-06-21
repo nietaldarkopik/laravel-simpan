@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::resource('laporan',LaporanController::class);
     Route::resource('sop',SopController::class);
     Route::resource('unit',UnitController::class);
+    Route::post('unit/update-sort',[UnitController::class,'updateSort'])->name('unit.updateSort');
     Route::resource('riwayat',RiwayatController::class);
     Route::get('pengajuan/{pengajuan}/document',[PengajuanController::class,'document'])->name('pengajuan.document');
     Route::get('pengajuan/{pengajuan}/step',[PengajuanController::class,'step'])->name('pengajuan.step');
@@ -51,9 +52,16 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::get('pengajuan/{pengajuan}/step-detail',[PengajuanController::class,'stepDetail'])->name('pengajuan.stepDetail');
     Route::get('pengajuan/{pengajuan}/form-upload-dokumen',[PengajuanController::class,'formUploadDokumen'])->name('pengajuan.formUploadDokumen');
     Route::post('pengajuan/{pengajuan}/upload-dokumen',[PengajuanController::class,'uploadDokumen'])->name('pengajuan.uploadDokumen');
+    Route::get('pengajuan/{sop_id}/get-step-sop',[PengajuanController::class,'getStepSop'])->name('pengajuan.getStepSop');
     Route::resource('roles',RolesController::class);
     Route::resource('users',UsersController::class);
     Route::resource('ubah-password',UbahPasswordController::class);
+    Route::get('sop/{sop}/form-upload-dokumen',[SopController::class,'formUploadDokumen'])->name('sop.formUploadDokumen');
+    Route::post('sop/{sop}/upload-dokumen',[SopController::class, 'uploadDokumen'])->name('sop.uploadDokumen');
+    Route::get('sop/check-kode/{kode?}/{id?}',[SopController::class, 'checkKode'])->name('sop.checkKode');
+    Route::get('sop/edit-flow-step/{id?}',[SopController::class, 'editFlowStep'])->name('sop.editFlowStep');
+    Route::get('sop/flow-step/{id?}',[SopController::class, 'flowStep'])->name('sop.flowStep');
+    Route::patch('sop/update-step/{sop_id?}',[SopController::class, 'updateStep'])->name('sop.updateStep');
 })->middleware('auth');
 
 Route::get('/home', function() {

@@ -59,7 +59,7 @@
                         name="parent_code">
                         <option value="0">Utama ...</option>
                         @foreach(\App\Models\UnitModel::orderBy('code','asc')->orderBy('parent_code','asc')->get() as $i => $d)
-                        <option value="{{ $d->id }}">{{ $d->code . ' - ' . $d->nama}}</option>
+                        <option value="{{ $d->code }}">{{ $d->code . ' - ' . $d->nama}}</option>
                         @endforeach
                     </select>
                 </div>
