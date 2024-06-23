@@ -21,9 +21,10 @@
 		<div class="form-group">
 			<label for="input-unit_id" class="form-label">Unit</label>
 			<select class="form-select form-control" name="unit_id[]" id="input-unit_id" disabled>
-				<option selected>Pilih Unit</option>
+				<option value="0">Pilih Unit</option>
+				<option value="0" selected>Pilih Unit</option>
 				@foreach($units as $iu => $u)
-				<option value="{{ $u->id }}">{{ $u->nama }}</option>
+				<option value="{{ $u->id }}">{{ $u->code }} - {{ $u->nama }}</option>
 				@endforeach
 			</select>
 		</div>

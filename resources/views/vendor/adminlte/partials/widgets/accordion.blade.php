@@ -14,7 +14,7 @@
 				<a class="float-start collapsed" data-toggle="collapse" data-parent="#accordionContainer{{$node_level}}" href="#sectionContent{{ $d->id }}" aria-expanded="true" aria-controls="sectionContent{{ $d->id }}">
 					<i class="fa fa-plus icon-expand" aria-hidden="true"></i>
 					<i class="fa fa-minus icon-collapse" aria-hidden="true"></i>
-					{{ $d->$title }}
+					{{ $d->code }} - {{ $d->$title }}
 				</a>
 				<div class="card-tools float-end">
 					<form method="post" action="{{ route('admin.unit.destroy',['unit' => $d])}}">
@@ -32,6 +32,8 @@
 		$query = $d;
 		$query = $query->newQuery()->where(function($query) use($parent_id,$child_id,$d){
 						$query->where($parent_id,'=',$d->$child_id);
+						$query->where($parent_id,'!=','0');
+						$query->whereNotNull($parent_id);
 					})->orderBy('sort_order','asc')->get();
 		$subdata = ['data' => $query, 'title' => $title, 'parent_id' => $parent_id, 'child_id' => $child_id, 'node' => $node_level, 'node_level' => $node_level+1];
 		@endphp

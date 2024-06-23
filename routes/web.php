@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\UbahPasswordController;
+use App\Http\Controllers\Admin\TindakanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,22 +41,34 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::resource('menu',MenuController::class);
     Route::resource('faq',FaqController::class);
     Route::resource('pengajuan',PengajuanController::class);
+    Route::resource('tindakan',TindakanController::class);
     Route::resource('laporan',LaporanController::class);
     Route::resource('sop',SopController::class);
     Route::resource('unit',UnitController::class);
+	Route::post('unit/generate-code',[UnitController::class,'generateCode'])->name('unit.generateCode');
     Route::post('unit/update-sort',[UnitController::class,'updateSort'])->name('unit.updateSort');
     Route::resource('riwayat',RiwayatController::class);
+    Route::resource('roles',RolesController::class);
+    Route::resource('users',UsersController::class);
+    Route::resource('ubah-password',UbahPasswordController::class);
+	
     Route::get('pengajuan/{pengajuan}/document',[PengajuanController::class,'document'])->name('pengajuan.document');
     Route::get('pengajuan/{pengajuan}/step',[PengajuanController::class,'step'])->name('pengajuan.step');
     Route::get('pengajuan/{pengajuan}/print',[PengajuanController::class,'print'])->name('pengajuan.print');
     Route::get('pengajuan/{pengajuan}/pdf',[PengajuanController::class,'pdf'])->name('pengajuan.pdf');
-    Route::get('pengajuan/{pengajuan}/step-detail',[PengajuanController::class,'stepDetail'])->name('pengajuan.stepDetail');
     Route::get('pengajuan/{pengajuan}/form-upload-dokumen',[PengajuanController::class,'formUploadDokumen'])->name('pengajuan.formUploadDokumen');
     Route::post('pengajuan/{pengajuan}/upload-dokumen',[PengajuanController::class,'uploadDokumen'])->name('pengajuan.uploadDokumen');
+    Route::get('pengajuan/{pengajuan}/step-detail',[PengajuanController::class,'stepDetail'])->name('pengajuan.stepDetail');
+    Route::get('pengajuan/{pengajuan}/message',[PengajuanController::class,'formMessage'])->name('pengajuan.formMessage');
+    Route::post('pengajuan/{pengajuan}/message',[PengajuanController::class,'postMessage'])->name('pengajuan.postMessage');
     Route::get('pengajuan/{sop_id}/get-step-sop',[PengajuanController::class,'getStepSop'])->name('pengajuan.getStepSop');
-    Route::resource('roles',RolesController::class);
-    Route::resource('users',UsersController::class);
-    Route::resource('ubah-password',UbahPasswordController::class);
+    
+	Route::get('tindakan/{pengajuan}/step-detail',[TindakanController::class,'stepDetail'])->name('tindakan.stepDetail');
+    Route::get('tindakan/{pengajuan}/message',[TindakanController::class,'formMessage'])->name('tindakan.formMessage');
+    Route::post('tindakan/{pengajuan}/message',[TindakanController::class,'postMessage'])->name('tindakan.postMessage');
+    Route::get('tindakan/{sop_id}/get-step-sop',[TindakanController::class,'getStepSop'])->name('tindakan.getStepSop');
+    Route::post('tindakan/{pengajuan}/update-status',[TindakanController::class,'updateStatus'])->name('tindakan.updateStatus');
+	
     Route::get('sop/{sop}/form-upload-dokumen',[SopController::class,'formUploadDokumen'])->name('sop.formUploadDokumen');
     Route::post('sop/{sop}/upload-dokumen',[SopController::class, 'uploadDokumen'])->name('sop.uploadDokumen');
     Route::get('sop/check-kode/{kode?}/{id?}',[SopController::class, 'checkKode'])->name('sop.checkKode');

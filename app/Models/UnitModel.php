@@ -25,4 +25,9 @@ class UnitModel extends Model
 	{
 		return $this->belongsTo('Category', 'parent_code');
 	}
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_units', 'id_unit', 'id_user');
+    }
 }

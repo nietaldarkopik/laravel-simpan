@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->publishes([
+            base_path('vendor/daneden/animate.css/animate.min.css') => public_path('vendor/daneden/animate.css/animate.min.css'),
+        ], 'public');
     }
 
     /**

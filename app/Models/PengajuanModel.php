@@ -36,4 +36,12 @@ class PengajuanModel extends Model
 	public function editedBy(){
 		return $this->belongsTo(\App\Models\User::class,'updated_by');
 	}
+
+	public function documents(){
+		return $this->hasMany(\App\Models\PengajuanDokumenModel::class,'id_pengajuan');
+	}
+
+	public function progress(){
+		return $this->hasMany(\App\Models\ProgressPengajuanModel::class,'id_pengajuan');
+	}
 }

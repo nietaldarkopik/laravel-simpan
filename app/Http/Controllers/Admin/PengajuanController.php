@@ -95,6 +95,11 @@ class PengajuanController extends Controller
 
         $pengajuan = PengajuanModel::create($dt);
 
+		if($request->input('status') == 'diajukan')
+		{
+			SopStepModel::generateProgress($pengajuan);
+		}
+
 		if($pengajuan)
 		{
 			return Response::json(['data' => $pengajuan,'message' => 'Data berhasil disimpan'],200);
@@ -131,7 +136,7 @@ class PengajuanController extends Controller
     public function psu($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
+        $sop = SopModel::with('step')->get();
 
         if($request->ajax()){
             return view('vendor.adminlte.pengajuans.form-psu', compact('pengajuan', 'sop'));
@@ -193,15 +198,15 @@ class PengajuanController extends Controller
         }
     }
 
-    public function psuDetail($id,Request $request)
+    public function stepDetail($id,Request $request)
     {
         $pengajuan = PengajuanModel::find($id);
-        $sop = SopModel::get();
+        $sop = SopModel::where('id',$pengajuan->id_sop)->with('step')->get()->first();
 
         if($request->ajax()){
-            return view('vendor.adminlte.pengajuans.form-psu-detail', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.form-step-detail', ['pengajuan' => $pengajuan, 'sop' => $sop]);
         }else{
-            return view('vendor.adminlte.pengajuans.psu-detail', compact('pengajuan', 'sop'));
+            return view('vendor.adminlte.pengajuans.step-detail', ['pengajuan' => $pengajuan, 'sop' => $sop]);
         }
     }
     
@@ -392,6 +397,10 @@ class PengajuanController extends Controller
 
         $pengajuan->save();
 
+		if($request->input('status') == 'diajukan')
+		{
+			SopStepModel::generateProgress($pengajuan);
+		}
 
         return Response::json(['data' => $pengajuan, 'message' => 'Data berhasil disimpan'],200);
     }
@@ -412,4 +421,18 @@ class PengajuanController extends Controller
 		return Response::json(['data' => ['step' => $stepSops,'dokumen' => $dokumenSops],'message' => 'ok']);
 		
     }
+
+	public function formMessage(PengajuanModel $pengajuan, Request $request)
+	{
+        if($request->ajax()){
+            return view('vendor.adminlte.pengajuans.form-message', compact('pengajuan'));
+        }else{
+            return view('vendor.adminlte.pengajuans.message', compact('pengajuan'));
+        }
+	}
+
+	public function postMessage(PengajuanModel $pengajuan, Request $request){
+
+	}
+
 }

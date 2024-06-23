@@ -202,7 +202,7 @@ return [
     'classes_sidebar' => 'sidebar-light-primary bg-light elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
-    'classes_topnav_nav' => 'navbar-expand navbar-white bg-orange navbar-light',
+    'classes_topnav_nav' => 'navbar-expand-sm navbar-white bg-orange navbar-light',
     'classes_topnav_container' => 'container-fluid',
 
     /*
@@ -459,6 +459,16 @@ return [
     */
 
     'plugins' => [
+        'AnimateCss' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/daneden/animate.css/animate.min.css',
+                ],
+            ],
+        ],
         'PaceProgress' => [
             'active' => true,
             'files' => [

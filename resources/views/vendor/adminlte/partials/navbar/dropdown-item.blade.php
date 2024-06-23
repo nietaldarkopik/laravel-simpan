@@ -1,6 +1,6 @@
 @inject('navbarItemHelper', 'JeroenNoten\LaravelAdminLte\Helpers\NavbarItemHelper')
 
-@if ($navbarItemHelper->isSubmenu($item) and isset($item['submenu']) and is_array($item['submenu']) and count($item['submenu']) > 0)
+@if ($navbarItemHelper->isSubmenu($item))
 
     {{-- Dropdown submenu --}}
     @include('adminlte::partials.navbar.dropdown-item-submenu')

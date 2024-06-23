@@ -24,7 +24,7 @@ class UsersController extends Controller
    
     public function index(Request $request)
     {
-        $data = User::latest()->paginate(20);
+        $data = User::with('units')->latest()->paginate(20);
         return view('vendor.adminlte.users.index',compact('data'));
     }
 
@@ -40,7 +40,8 @@ class UsersController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'units' => 'required',
         ]);
     
         $input = $request->all();
@@ -48,7 +49,9 @@ class UsersController extends Controller
     
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
-    
+		$user->assignUnit($request->input('units'));
+		$user->assignUnitRole($request->input('units'),$request->input('roles'));
+
         return redirect()->route('admin.users.index')
                         ->with('success','User created successfully');
     }
@@ -74,7 +77,8 @@ class UsersController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'units' => 'required',
         ]);
     
         $input = $request->all();
@@ -89,6 +93,8 @@ class UsersController extends Controller
         DB::table('model_has_roles')->where('model_id',$id)->delete();
     
         $user->assignRole($request->input('roles'));
+		$user->assignUnit($request->input('units'));
+		$user->assignUnitRole($request->input('units'),$request->input('roles'));
     
         return redirect()->route('admin.users.index')
                         ->with('success','User updated successfully');

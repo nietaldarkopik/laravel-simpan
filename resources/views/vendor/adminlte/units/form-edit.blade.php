@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="col-sm-8 p-1">
-                    <input required="required" type="text" name="nama" value="{{ $unit?->nama }}" maxlength="20"
+                    <input required="required" type="text" name="nama" value="{{ $unit?->nama }}"
                         class="form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
                         placeholder="Nama Unit" />
                 </div>
@@ -58,8 +58,8 @@
                     <select class="form-select form-control border-warning border py-0 text-italic rounded-0 form-control-sm"
                         name="parent_code">
                         <option value="0">Utama ...</option>
-                        @foreach(\App\Models\UnitModel::orderBy('code','asc')->where('id','!=',$unit?->id)->orderBy('parent_code','asc')->get() as $i => $d)
-                        <option value="{{ $d->code }}" @selected($d->code == $d->parent_code)>{{ $d->code . ' - ' . $d->nama}}</option>
+                        @foreach(\App\Models\UnitModel::orderBy('code')->where('id','!=',$unit?->id)->get() as $i => $d)
+                        <option value="{{ $d->code }}" @selected($d->code == $unit->parent_code)>{{ $d->code . ' - ' . $d->nama}}</option>
                         @endforeach
                     </select>
                 </div>

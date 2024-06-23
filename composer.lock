@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "102842440574de0565f5ae46995515ee",
+    "content-hash": "75d5b0f71cc5bdbb0f6d57a2c1c514f8",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -254,6 +254,27 @@
                 }
             ],
             "time": "2023-12-11T17:09:12+00:00"
+        },
+        {
+            "name": "daneden/animate.css",
+            "version": "3.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ange187/animate.css.git",
+                "reference": "79a73464c3424b4f17a64d78092800d676e25b25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ange187/animate.css/zipball/79a73464c3424b4f17a64d78092800d676e25b25",
+                "reference": "79a73464c3424b4f17a64d78092800d676e25b25",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "support": {
+                "source": "https://github.com/ange187/animate.css/tree/master"
+            },
+            "time": "2017-04-21T12:02:21+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

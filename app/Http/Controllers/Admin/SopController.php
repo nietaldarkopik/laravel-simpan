@@ -171,7 +171,7 @@ class SopController extends Controller
     public function flowStep($id,Request $request)
     {
         $sop = SopModel::find($id);
-		$units = UnitModel::get();
+		$units = UnitModel::orderBy('code','asc')->get();
 
         if($request->ajax()){
             return view('vendor.adminlte.sops.form-flow-step', compact('sop','units'));
@@ -183,7 +183,7 @@ class SopController extends Controller
     public function editFlowStep($id,Request $request)
     {
         $sop = SopModel::find($id);
-		$units = UnitModel::get();
+		$units = UnitModel::orderBy('code','asc')->get();
 
         if($request->ajax()){
             return view('vendor.adminlte.sops.form-edit-flow-step', compact('sop','units'));

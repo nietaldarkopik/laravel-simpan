@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('adaajaada'),]
         );
 
-        $role = Role::firstOrCreate(['name' => 'Admin', 'team_id' => null]);
+        $role = Role::firstOrCreate(['name' => 'Admin', 'unit_id' => null]);
 
         $permissions = Permission::pluck('id', 'id')->all();
 

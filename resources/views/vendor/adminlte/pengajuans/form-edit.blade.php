@@ -110,55 +110,22 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md-12 p-2">
-							<!-- Some borders are removed -->
 							<ul class="list-group">
+								@foreach($pengajuan->documents()->get() as $i => $d)
 								<li class="list-group-item">
 									<div class="row">
 										<div class="col-9">
-											Nama file
+											{{ basename($d->file) }}
 										</div>
 										<div class="col-3 text-right">
-											<a href="#" class="btn btn-sm btn-primary" title="Lihat File">
+											<a href="{{ asset(Storage::url($d->file)) }}" target="_blank" class="btn btn-sm btn-primary" title="Lihat File">
 												<i class="fa fa-eye" aria-hidden="true"></i>
 											</a>
-											<button class="btn btn-sm btn-danger" title="Hapus File">
-												<i class="fa fa-trash" aria-hidden="true"></i>
-											</button>
 										</div>
 									</div>
 								</li>
-								<li class="list-group-item">
-									<div class="row">
-										<div class="col-9">
-											Nama file
-										</div>
-										<div class="col-3 text-right">
-											<a href="#" class="btn btn-sm btn-primary" title="Lihat File">
-												<i class="fa fa-eye" aria-hidden="true"></i>
-											</a>
-											<button class="btn btn-sm btn-danger" title="Hapus File">
-												<i class="fa fa-trash" aria-hidden="true"></i>
-											</button>
-										</div>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<div class="row">
-										<div class="col-9">
-											Nama file
-										</div>
-										<div class="col-3 text-right">
-											<a href="#" class="btn btn-sm btn-primary" title="Lihat File">
-												<i class="fa fa-eye" aria-hidden="true"></i>
-											</a>
-											<button class="btn btn-sm btn-danger" title="Hapus File">
-												<i class="fa fa-trash" aria-hidden="true"></i>
-											</button>
-										</div>
-									</div>
-								</li>
-							</ul>
-							
+								@endforeach
+							</ul>							
 						</div>
 					</div>
 				</div>

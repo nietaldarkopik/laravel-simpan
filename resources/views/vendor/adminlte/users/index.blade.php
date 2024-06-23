@@ -34,6 +34,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Roles</th>
+                            <th>Unit</th>
                             <th width="280px">Action</th>
                         </tr>
                     </thead>
@@ -54,6 +55,16 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @if (!empty($user->units()->get()->pluck('nama')))
+                                        @foreach ($user->units()->get()->pluck('nama') as $v)
+                                            <label class="badge badge-secondary text-light fs-6">{{ $v }}</label>
+                                        @endforeach
+                                    @endif
+                                </td>
+                                <td>
+									<form method="post" action="{{ route('admin.users.destroy', $user->id)}}">
+										@csrf
+										@method('delete')
                                     <a class="btn btn-sm btn-info" href="{{ route('admin.users.show', $user->id) }}"
                                         data-toggle="tooltip" data-placement="bottom" data-html="false"
                                         data-title="Tampilkan Detail">
@@ -64,12 +75,13 @@
                                         data-title="Edit Data">
                                         <i class="fa fa-edit" aria-hidden="true"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-danger" href="{{ route('admin.users.destroy', $user->id) }}"
-                                        data-toggle="tooltip" data-placement="bottom" data-html="false"
-                                        data-title="Hapus Data">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </a>
-                                </td>
+										<button class="btn btn-sm btn-danger" href="{{ route('admin.users.destroy', $user->id) }}"
+											data-toggle="tooltip" data-placement="bottom" data-html="false"
+											data-title="Hapus Data">
+											<i class="fa fa-trash" aria-hidden="true"></i>
+										</button>
+									</form>
+                                </td>	
                             </tr>
                         @endforeach
                     </tbody>

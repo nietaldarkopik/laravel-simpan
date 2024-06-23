@@ -193,7 +193,7 @@ CREATE TABLE `model_has_permissions` (
   `permission_id` bigint(20) UNSIGNED NOT NULL,
   `model_type` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL,
-  `team_id` bigint(20) UNSIGNED DEFAULT NULL
+  `unit_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -206,14 +206,14 @@ CREATE TABLE `model_has_roles` (
   `role_id` bigint(20) UNSIGNED NOT NULL,
   `model_type` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint(20) UNSIGNED NOT NULL,
-  `team_id` bigint(20) UNSIGNED DEFAULT NULL
+  `unit_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data untuk tabel `model_has_roles`
 --
 
-INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`, `team_id`) VALUES
+INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`, `unit_id`) VALUES
 (1, 'App\\Models\\User', 1, NULL),
 (2, 'App\\Models\\User', 2, NULL),
 (2, 'App\\Models\\User', 3, NULL),
@@ -690,7 +690,7 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `team_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `unit_id` bigint(20) UNSIGNED DEFAULT NULL,
   `name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `guard_name` varchar(125) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -701,7 +701,7 @@ CREATE TABLE `roles` (
 -- Dumping data untuk tabel `roles`
 --
 
-INSERT INTO `roles` (`id`, `team_id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
+INSERT INTO `roles` (`id`, `unit_id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
 (1, NULL, 'Admin', 'web', '2024-06-11 09:21:47', '2024-06-11 09:21:47'),
 (2, NULL, 'Pengguna', 'web', '2024-06-20 04:09:05', '2024-06-20 04:09:05');
 
@@ -1825,8 +1825,8 @@ ALTER TABLE `personal_access_tokens`
 --
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `roles_team_id_name_guard_name_unique` (`team_id`,`name`,`guard_name`),
-  ADD KEY `roles_team_foreign_key_index` (`team_id`);
+  ADD UNIQUE KEY `roles_unit_id_name_guard_name_unique` (`unit_id`,`name`,`guard_name`),
+  ADD KEY `roles_team_foreign_key_index` (`unit_id`);
 
 --
 -- Indeks untuk tabel `role_has_permissions`

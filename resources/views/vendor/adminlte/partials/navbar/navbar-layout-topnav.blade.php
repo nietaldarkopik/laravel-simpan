@@ -11,12 +11,6 @@
             @include('adminlte::partials.common.brand-logo-xs')
         @endif
 
-        {{-- Navbar toggler button --}}
-        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         {{-- Navbar collapsible menu --}}
         <div class="collapse navbar-collapse order-3 justify-content-end" id="navbarCollapse">
             {{-- Navbar left links --}}
@@ -30,7 +24,7 @@
 				$menu_group_ids = $menu_group?->collect()->pluck('id');
 				@endphp
 				
-                @each('adminlte::partials.navbar.menu-item', App\Models\MenuModel::select(DB::raw('*,"" as class, url as href,title as text'))->with('submenu')->where(function($query) use ($menu_group_ids){
+                @each('adminlte::partials.navbar.menu-item', App\Models\MenuModel::select(DB::raw('*,"" as class, concat("'.url('/').'",url) as href,title as text'))->with('submenu')->where(function($query) use ($menu_group_ids){
 					$query->where('parent_id','=',0);
 					$query->whereIn('menu_group_id',$menu_group_ids);
 				})->orderBy('sort_order')->get()->toArray(), 'item')
@@ -62,6 +56,12 @@
                 @include('adminlte::partials.navbar.menu-item-right-sidebar-toggler')
             @endif
         </ul>
+
+        {{-- Navbar toggler button --}}
+        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
     </div>
 

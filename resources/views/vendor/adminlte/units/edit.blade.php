@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="card-body">
-            @include('vendor.adminlte.units.form-edit',['unit','kabupatenkotas'])
+            @include('vendor.adminlte.units.form-edit',['unit'])
         </div>
     </div>
 

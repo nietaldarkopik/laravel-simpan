@@ -44,6 +44,9 @@
             <h2 class="card-title fw-bold fs-4">Data Unit</h2>
             <div class="card-tools">
                 @can('admin.unit.create')
+                    <button type="button" class="btn btn-sm btn-primary btn-generate-code" >
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Generate Kode
+                    </button>
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.unit.create') }}" data-toggle="modal"
                         data-target="#modalLgId" data-modal-title="Tambah Data">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah
@@ -152,6 +155,18 @@
     </script>
 	<script>
 
+		function getHierarchy($list) {
+			$list = (typeof $list == 'undefined')?$(".card-sortable").eq(0):$list;
+			var result = [];
+			$list.children('[data-id]').each(function() {
+				var $item = $(this);
+				var id = $item.data('id');
+				var children = $item.children('.collapse').children('.card-body').children('.card-sortable').length > 0 ? getHierarchy($item.children('.collapse').children('.card-body').children('.card-sortable')) : [];
+				result.push({ id: id, children: children });
+			});
+			return result;
+		}
+
 		// Function to get the order with custom attributes
 		function getCustomOrder(parent_container) {
 			parent_container = (typeof parent_container == 'undefined')?".card-sortable":parent_container;
@@ -199,6 +214,35 @@
 			})
 		}
 
+		function generateCode(){
+			var data_units = getHierarchy();
+			var url = "{{ route('admin.unit.generateCode')}}";
+
+			$.ajax({
+				url: url,
+				type: 'post',
+				data: {data: data_units},
+				headers: {
+					'X-CSRF-TOKEN': "{{ csrf_token() }}",
+				},
+				dataType: 'json',
+				success:function(response){
+					toastr.success(response.message, "Sukses", {
+						timeOut: 3000,
+						positionClass: "toast-top-right",
+						progressBar: true
+					});
+				},
+				error:function(xhr, status, error){
+					toastr.error(xhr.responseJSON.message, "Error", {
+                            timeOut: 3000,
+                            positionClass: "toast-top-right",
+                            progressBar: true
+                        });
+				}
+			})
+		}
+
 		$(document).ready(function(){
 			$( ".card-sortable" ).sortable({
 				connectWith: ".card-sortable",
@@ -216,6 +260,10 @@
 					updateOrder();
 				}
 			}).disableSelection();
-		})
+
+			$("body").on("click",".btn-generate-code",function(){
+				generateCode();
+			});
+		});
 	</script>
 @endpush

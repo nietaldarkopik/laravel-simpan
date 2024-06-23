@@ -85,7 +85,7 @@ class UnitController extends Controller
 			foreach($data as $i => $d)
 			{
 				$unit = UnitModel::find($d['id']);
-				$unit->parent_code = $d['parent_code'];
+				$unit->parent_code = (empty($d['parent_code']))?null:$d['parent_code'];
 				if($d['sort_order'] >= 0)
 				{
 					$unit->sort_order = $d['sort_order'];
@@ -131,9 +131,10 @@ class UnitController extends Controller
         $user_id = Auth::user()->id;
 
         $unit = UnitModel::find($id);
+        UnitModel::where('parent_code',$unit->code)->update(['parent_code' => $request->input('code')]);
         
         $unit->code = $request->input('code');
-        $unit->parent_code = $request->input('parent_code');
+        $unit->parent_code = (empty($request->input('parent_code')))?null:$request->input('parent_code');
         $unit->nama = $request->input('nama');
         $unit->keterangan = $request->input('keterangan');
         $unit->save();
@@ -148,5 +149,36 @@ class UnitController extends Controller
         $unit->delete();
         return redirect()->route('admin.unit.index')
             ->with('success', 'Unit telah dihapus');
+    }
+
+    public function generateCode(Request $request,$data = 0,$unit_parent = 0)
+    {
+		if(empty($data))
+		{
+			UnitModel::whereNotNull('id')->update(['code' => null]);
+		}
+
+		$data = (!empty($data))?$data:$request->input('data');
+
+		if(is_array($data) and count($data) > 0)
+		{
+			foreach($data as $i => $d)
+			{
+				$unit = UnitModel::find($d['id']);
+				$unit->parent_code = (empty($unit_parent))?null:$unit_parent->code;
+				$code = (empty($unit->parent_code))?str_pad($i+1,2,'0',STR_PAD_LEFT):$unit->parent_code . str_pad($i+1,2,'0',STR_PAD_LEFT);
+				$unit->code = $code;
+				$unit->sort_order = $i+1;
+
+
+				$unit->save();
+
+				if(isset($d['children']) and is_array($d['children']) and count($d['children']) > 0)
+				{
+					$this->generateCode($request,$d['children'],$unit);
+				}
+			}
+		}
+        return response()->json(['message' => 'Data berhasil diperbarui!'], 200);
     }
 }
