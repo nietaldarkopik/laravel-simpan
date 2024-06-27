@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-sm-4 p-0 bg-secondary text-white px-1 d-flex justify-content-start align-items-center">
                     <div class="form-group mb-0">
-                        <span>Nama SOP</span>
+                        <span>Nama Jenis Pengajuan</span>
                     </div>
                 </div>
                 <div class="col-sm-8 p-1">

@@ -20,28 +20,28 @@
 @section('plugins.IonRangslider', false)
 @section('plugins.JqueryKnob', false)
 @section('plugins.JqueryMapael', false)
-@section('plugins.JqueryUi', false)
+@section('plugins.JqueryUi', true)
 @section('plugins.JqueryValidation', false)
 @section('plugins.Jqvmap', false)
 @section('plugins.Jsgrid', false)
 @section('plugins.PaceProgress', false)
-@section('plugins.Select2', false)
+@section('plugins.Select2', true)
 @section('plugins.Sparklines', false)
 {{-- @section('plugins.Summernote', false) --}}
 @section('plugins.Sweetalert2', false)
 {{-- @section('plugins.TempusdominusBootstrap4', false) --}}
 @section('plugins.Toastr', true)
 
-@section('title', 'Data SOP')
+@section('title', 'Data Jenis Pengajuan')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Data SOP</h1>
+    <h1 class="m-0 text-dark">Data Jenis Pengajuan</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title fw-bold fs-4">Data SOP</h2>
+            <h2 class="card-title fw-bold fs-4">Data Jenis Pengajuan</h2>
             <div class="card-tools">
                 @can('admin.sop.create')
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.sop.create') }}" data-toggle="modal" data-target="#modalLgId" data-modal-title="Tambah Data">
@@ -73,37 +73,51 @@
         </div>
     </div>
 
-    @include('vendor.adminlte.partials.modal.modal-default',[
-        'modalId' => 'modalLgId',
-        'modalSize' => 'modal-lg',
-        'modalTitle' => '',
-        'modalContent' => '',
-        'modalFooter' => '',
-    ])
+	@include('vendor.adminlte.partials.modal.modal-default',[
+		'modalId' => 'modalLgId',
+		'modalSize' => 'modal-lg',
+		'modalTitle' => '',
+		'modalContent' => '',
+		'modalFooter' => '',
+	])
+
 @endsection
 
 @push('css')
-{{-- <style>
-    .file-drop-area {
-        border: 2px dashed #007bff;
-        border-radius: 5px;
-        padding: 30px;
-        text-align: center;
-        cursor: pointer;
-        color: #007bff;
-        transition: background-color 0.3s;
-    }
-    .file-drop-area.drag-over {
-        background-color: #e9ecef;
-    }
-</style> --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-treetable/css/jquery.treetable.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-treetable/css/jquery.treetable.theme.default.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<style>
-    .indented { padding-left: 20px; }
-</style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-treetable/css/jquery.treetable.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-treetable/css/jquery.treetable.theme.default.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        .indented {
+            padding-left: 20px;
+        }
+		.card-sortable {
+			min-height: 20px;
+			list-style-type: none;
+			padding: 5px;
+		}
+		.card-sortable .card-sortable {
+			padding: 5px;
+		}
+		.ui-state-highlight{
+			background: rgba(255, 208, 0, 0.697);
+			min-height: 20px;
+		}
+		.icon-expand{
+			display: none;
+		}
+		.icon-collapse{
+			display: inline-block;
+		}
+		.collapsed .icon-expand{
+			display: inline-block;
+		}
+		.collapsed .icon-collapse{
+			display: none;
+		}
+    </style>
 @endpush
+
 
 @push('js')
 
@@ -112,6 +126,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-treetable/jquery.treetable.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.ajax/2.1.0/leaflet.ajax.min.js"></script>
+
 <script>
     $(function() {
         $('[data-tooltip]').tooltip({})
@@ -150,107 +165,7 @@
         window.LaravelDataTables["perumahans-table"].table().draw();
     });
 
-    function getKabupatenKotaOptions(callback){
-        var url = "{{-- {{ route('admin.services.getKabupatenKota') }} --}}";
-
-        return $.ajax({
-            url: url,
-            type: "get",
-            dataType: "json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: {},
-            success: callback
-        })
-    }
-
-    $("body").on("change","#filter-kabkota_id",function(){
-        $("#filter-kecamatan_id").html("<option value=''>Memuat Data ...</option>");
-        var val = $(this).val();
-        var data = getKecamatanOptions(val,function(d){
-
-            $("#filter-kecamatan_id").html("<option value=''>Kecamatan ...</option>");
-            if(d.length > 0)
-            {
-                d.forEach(e => {
-                    $("#filter-kecamatan_id").append("<option value='"+e.id+"'>"+e.name+"</option>");
-                });
-            }
-        });
-    });
-
-    
-    $("body").on("change","#input-kabkota_id",function(){
-        $("#input-kecamatan_id").html("<option value=''>Memuat Data ...</option>");
-        var val = $(this).val();
-        var data = getKecamatanOptions(val,function(d){
-
-            $("#input-kecamatan_id").html("<option value=''>Pilih Kecamatan ...</option>");
-            if(d.length > 0)
-            {
-                d.forEach(e => {
-                    $("#input-kecamatan_id").append("<option value='"+e.id+"'>"+e.name+"</option>");
-                });
-            }
-        });
-    });
-    
-    $("body").on("change","#input-kecamatan_id",function(){
-        $("#input-kelurahan_id").html("<option value=''>Memuat Data ...</option>");
-        var kecamatan_id = $(this).val();
-        var kabupatenkota_id = 0;
-        var data = getKelurahanOptions(kabupatenkota_id,kecamatan_id,function(d){
-
-            $("#input-kelurahan_id").html("<option value=''>Pilih Kelurahan ...</option>");
-            if(d.length > 0)
-            {
-                d.forEach(e => {
-                    $("#input-kelurahan_id").append("<option value='"+e.id+"'>"+e.name+"</option>");
-                });
-            }
-        });
-    });
-    
-    // Fungsi untuk menambahkan file ke daftar
-    function addFileToList(file,clickableElements,response) {
-        response = JSON.parse(response);
-        if(!response.id){
-            return false;
-        }
-        var url = "{{-- {{ route('admin.psuperumahan.getPsuItem',['PsuSOP' => 'xx'])}} --}}";
-        var fileListUl = $(clickableElements).closest('.card-psu-list').find('.file-list-psu');
-        url = url.replace('xx',response.id);
-
-        $.ajax({
-            url: url,
-            type: "get",
-            dataType: "html",
-            success:function(msg){
-                $(fileListUl).prepend(msg);
-            }
-        })
-    }
-
-    function savePsuDetail(form,id,callback) {
-        var url = "{{-- {{ route('admin.psuperumahan.updatePsuItem',['PsuSOP' => 'xx'])}} --}}";
-        url = url.replace('xx',id);
-
-        form.append('_method','patch');
-
-        $.ajax({
-            url: url,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            data: form,
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            success: callback
-        })
-    }
-
+	
     function addFileToListDokumen(path,clickableElements,response){
         // Load GeoJSON data
         //var geojsonLayer = new L.GeoJSON.AJAX(path); // Ganti path dengan path GeoJSON Anda
@@ -286,59 +201,94 @@
         //geojsonLayer.addTo(map);
         $(".file-list-map").prepend('<li class="list-group-item">'+path.name+'</li>');
     }
+	
+	function getHierarchy($list) {
+		$list = (typeof $list == 'undefined')?$(".card-sortable").eq(0):$list;
+		var result = [];
+		$list.children('[data-id]').each(function() {
+			var $item = $(this);
+			var id = $item.data('id');
+			var children = $item.children('.collapse').children('.card-body').children('.card-sortable').length > 0 ? getHierarchy($item.children('.collapse').children('.card-body').children('.card-sortable')) : [];
+			result.push({ id: id, children: children });
+		});
+		return result;
+	}
 
-    $("body").on("change",".card-psu-item :input",function(){
-        if($(this).closest(".card-psu-item").length > 0)
-        {
-            $(this).closest(".card-psu-item").find(".btn-save-psu-container").removeClass("d-none").addClass("d-flex");
-        }
-    });
+	// Function to get the order with custom attributes
+	function getCustomOrder(parent_container) {
+		parent_container = (typeof parent_container == 'undefined')?".card-sortable":parent_container;
+		return $(parent_container).find("[data-id]").map(function(i,v) {
+			var new_parent_id = $(this).parents("[data-parent_id]").data("id") ?? 0;
+			var new_sort_order = $("[data-id='"+$(this).data("id")+"']").index($("[data-id]").parent().find("[data-id]"));
+			$(this).data("parent_id",new_parent_id);
 
-    $("body").on("click",".btn-cancel-psu",function(){
-        if($(this).closest(".card-psu-item").length > 0)
-        {
-            $(this).closest(".card-psu-item").find(".btn-save-psu-container").removeClass("d-flex").addClass("d-none");
-        }
-    })
+			return {
+				id: $(this).data("id"),
+				parent_id: new_parent_id,
+				sort_order: i, //(new_sort_order >= 0)?new_sort_order:false,
+				id: $(this).data("id")
+			};
+		}).get();
+	}
 
-    $("body").on("click",".btn-save-psu",function(){
-        var form = $(this).closest('form')[0];
-        var id = $(this).data('id');
-        var card = $(this).closest(".card-psu-item");
-        formData = new FormData();
-        var input = $(this).closest(".card-psu-item").find(":input");
-        $.each(input,function(i,v){
-            formData.append($(v).attr("name"),$(v).val());
-        });
-        savePsuDetail(formData,id,function(){
-            if($(card).length > 0)
-            {
-                $(card).find(".btn-save-psu-container").removeClass("d-flex").addClass("d-none");
-            }
-            alert("Data Berhasil disimpan");
-        });
-    });
-    
-    $("body").on("click","[name='id_psu']",function(){
-        var id = $(this).data('id');
-        var id_psu = $(this).val();
-        var card = $(this).closest(".card-psu-item");
-        var url = "{{-- {{ route('admin.psuperumahan.getPsuAttributeForm',['PsuSOP' => 'xx','PSU' => 'yy'])}} --}}";
-        url = url.replace('xx',id);
-        url = url.replace('yy',id_psu);
+	function updateOrder(){
+		var data_units = getCustomOrder();
+		console.log(data_units);
+		var url = "{{ route('admin.unit.updateSort')}}";
 
-        $.ajax({
-            url: url,
-            type: 'get',
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            dataType: 'html',
-            success:function(msg){
-                $(card).find(".attribute-psu-container").html(msg);
-            }
-        })
-    });
+		$.ajax({
+			url: url,
+			type: 'post',
+			data: {data: data_units},
+			headers: {
+				'X-CSRF-TOKEN': "{{ csrf_token() }}",
+			},
+			dataType: 'json',
+			success:function(response){
+				toastr.success(response.message, "Sukses", {
+					timeOut: 3000,
+					positionClass: "toast-top-right",
+					progressBar: true
+				});
+			},
+			error:function(xhr, status, error){
+				toastr.error(xhr.responseJSON.message, "Error", {
+						timeOut: 3000,
+						positionClass: "toast-top-right",
+						progressBar: true
+					});
+			}
+		})
+	}
+
+	function generateCode(){
+		var data_units = getHierarchy();
+		var url = "{{ route('admin.unit.generateCode')}}";
+
+		$.ajax({
+			url: url,
+			type: 'post',
+			data: {data: data_units},
+			headers: {
+				'X-CSRF-TOKEN': "{{ csrf_token() }}",
+			},
+			dataType: 'json',
+			success:function(response){
+				toastr.success(response.message, "Sukses", {
+					timeOut: 3000,
+					positionClass: "toast-top-right",
+					progressBar: true
+				});
+			},
+			error:function(xhr, status, error){
+				toastr.error(xhr.responseJSON.message, "Error", {
+						timeOut: 3000,
+						positionClass: "toast-top-right",
+						progressBar: true
+					});
+			}
+		})
+	}
 
 	$("body").on("blur",'[name="kode"]',function(){
         var kode = $(this).val();
@@ -368,9 +318,15 @@
 	$("body").on("click",".btn-add-step",function(){
 		var master = $(".card-step-master").clone();
 		$(master).find(":input").prop("disabled",false);
+		$(master).find(".custom-select2x").addClass("custom-select2").removeClass("custom-select2x");
 		$(master).removeClass("card-step-master").show();
+		if($(master).find('.custom-select2').length > 0 && $(master).find('.custom-select2').hasClass('select2-hidden-accessible'))
+		{
+			$(master).find('.custom-select2').select2("destroy");
+		}
+		buildSelect2($(master).find('.custom-select2'),$('#modalLgId  .modal-body'));
 		$(master).show();
-		$(".alur-container").append(master);
+		$(".alur-container > .card-sortable").append(master);
 	});
 
 	$("body").on("click",".btn-save-step",function(){
@@ -415,5 +371,60 @@
 			$(this).closest(".card").remove();
 		}
 	})
+
+	function buildSelect2(selector,parent){
+		parent = (!parent)?$('#modalLgId .modal-body'):parent;
+		$(selector).select2({
+			dropdownParent: parent,
+			allowClear: true,
+			tags: true,
+			placeholder: 'Pilih ...',
+		});
+	}
+	
+	$('body','.custom-select2').on('select2:open', function () {
+		const select2Dropdown = $('.select2-container');
+		const select2Element = $('.custom-select2');
+
+		// Calculate position
+		const offset = select2Element.offset();
+		const height = select2Element.outerHeight();
+
+		// Set position
+		select2Dropdown.css({
+			top: offset.top + height,
+			left: offset.left,
+			position: 'absolute'
+		});
+	});
+
+	$('#modalLgId').on('shown.bs.modal', function () {
+		/* $("#modalLgId .alur-container .card-sortable" ).sortable({
+			items: '.card-accordion-items',
+			connectWith: ".card-sortable",
+			placeholder: "ui-state-highlight",
+			handle: ".action-move",
+			update: function(event, ui) {
+				//updateOrder();
+			}
+		}).disableSelection();
+		
+		$("#modalLgId .alur-container > .card-sortable .card  .collapse  .card-sortable").sortable({
+			items: '.card-accordion-items',
+			connectWith: ".card-sortable",
+			handle: ".action-move",
+			placeholder: "ui-state-highlight",
+			update: function(event, ui) {
+				//updateOrder();
+			}
+		}).disableSelection();
+
+		buildSelect2($('#modalLgId').find('.custom-select2'),$('#modalLgId')); */
+	});
+	
+	$("body").on("click",".btn-generate-id",function(){
+		generateCode();
+	});
+
 </script>
 @endpush

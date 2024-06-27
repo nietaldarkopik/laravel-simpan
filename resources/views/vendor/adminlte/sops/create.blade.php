@@ -1,14 +1,14 @@
 @extends('adminlte::page')
 
-@section('title', 'Buat SOP')
+@section('title', 'Buat Jenis Pengajuan')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Buat SOP</h1>
+    <h1 class="m-0 text-dark">Buat Jenis Pengajuan</h1>
 @stop
 @section('content')
     <div class="card col-md-8 mx-auto">
         <div class="card-header">
-            <h2 class="card-title fw-bold fs-4">Buat SOP</h2>
+            <h2 class="card-title fw-bold fs-4">Buat Jenis Pengajuan</h2>
             <div class="card-tools">
                 {{-- @can('admin.sop.index')
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.sop.index') }}">

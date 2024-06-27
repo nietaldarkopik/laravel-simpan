@@ -32,16 +32,16 @@
 {{-- @section('plugins.Summernote', false) --}}
 {{-- @section('plugins.TempusdominusBootstrap4', false) --}}
 
-@section('title', 'Data SOP')
+@section('title', 'Data Jenis Pengajuan')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Data SOP</h1>
+    <h1 class="m-0 text-dark">Data Jenis Pengajuan</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title fw-bold fs-4">Data SOP</h2>
+            <h2 class="card-title fw-bold fs-4">Data Jenis Pengajuan</h2>
             <div class="card-tools">
                 @can('admin.sop.create')
                     <a class="btn btn-sm btn-primary" href="{{ route('admin.sop.create') }}" data-toggle="modal"
@@ -70,7 +70,7 @@
                 </div>
             @endif
 			
-			@include('vendor.adminlte.partials.widgets.accordion',['data' => \App\Models\SOPModel::where(function($query){
+			@include('vendor.adminlte.partials.widgets.accordion',['data' => \App\Models\Jenis PengajuanModel::where(function($query){
 				$query->whereNull('parent_code');
 				$query->orWhere('parent_code','0');
 			})->orderBy('sort_order','asc')->get(), 'title' => 'nama', 'parent_id' => 'parent_code', 'child_id' => 'code', 'node' => 0, 'node_level' => 0])
@@ -216,6 +216,13 @@
 					updateOrder();
 				}
 			}).disableSelection();
+
+			$('#modalLgId').on('shown.bs.modal', function () {
+				$('.custom-select2').select2({
+					dropdownParent: $('#modalLgId')
+				});
+			});
 		})
+
 	</script>
 @endpush

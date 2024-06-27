@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\SopModel;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -26,6 +27,12 @@ class SopsDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', 'vendor.adminlte.sops.datatables_action')
+			->addColumn('created_by', function($content){
+				return User::where('id',$content->created_by)?->first()?->name ?? 'System';
+			})
+			->addColumn('updated_by', function($content){
+				return User::where('id',$content->updated_by)?->first()?->name ?? 'System';
+			})
             /* ->addColumn('prosedur', function($content){
 				return nl2br($content->prosedur);
 			}) */
@@ -131,7 +138,7 @@ class SopsDataTable extends DataTable
             ->orderable(false)
             ->searchable(false),
 			Column::make('kode')->title('Kode')->searchable(true)->visible(true),
-			Column::make('sop')->title('SOP')->searchable(true)->visible(true),
+			Column::make('sop')->title('Jenis Pengajuan')->searchable(true)->visible(true),
 			Column::make('created_by')->title('Pembuat')->searchable(true)->visible(true),
 			Column::make('updated_by')->title('Pengedit')->searchable(true)->visible(true),
 			Column::make('created_at')->title('Tanggal Upload')->searchable(true)->visible(true),

@@ -391,7 +391,7 @@ return [
                     //"url" => "admin.kabupaten-kota",
                     "route" => "admin.sop.index",
                     "icon" => "far fa-circle nav-icon",
-                    "text" => "SOP",
+                    "text" => "Jenis Pengajuan",
                 ],
             ],
         ],

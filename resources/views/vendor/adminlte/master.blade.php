@@ -31,24 +31,24 @@
         <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
         @if(config('adminlte.google_fonts.allowed', true))
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-        @endif
-    @else
-        <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'build/assets/css/app.css')) }}">
-    @endif
+			@endif
+			@else
+			<link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'build/assets/css/app.css')) }}">
+			@endif
+			
+			{{-- Extra Configured Plugins Stylesheets --}}
+			@include('adminlte::plugins', ['type' => 'css'])
 
-    {{-- Extra Configured Plugins Stylesheets --}}
-    @include('adminlte::plugins', ['type' => 'css'])
-
-    {{-- Livewire Styles --}}
+			{{-- Livewire Styles --}}
     @if(config('adminlte.livewire'))
         @if(intval(app()->version()) >= 7)
             @livewireStyles
         @else
             <livewire:styles />
-        @endif
-    @endif
-
-    {{-- Custom Stylesheets (post AdminLTE) --}}
+			@endif
+			@endif
+			
+			{{-- Custom Stylesheets (post AdminLTE) --}}
     @yield('adminlte_css')
 
     {{-- Favicon --}}
@@ -72,15 +72,9 @@
         <link rel="manifest" crossorigin="use-credentials" href="{{ asset('favicons/manifest.json') }}">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
-    @endif
-
-</head>
-
-<body class="@yield('classes_body')" @yield('body_data')>
-
-    {{-- Body Content --}}
-    @yield('body')
-
+	@endif
+		
+	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {{-- Base Scripts --}}
     @if(!config('adminlte.enabled_laravel_mix'))
         <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
@@ -94,6 +88,13 @@
     @else
         <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}" type="module"></script>
     @endif
+</head>
+
+<body class="@yield('classes_body')" @yield('body_data')>
+	
+	{{-- Body Content --}}
+    @yield('body')
+
 
     {{-- Extra Configured Plugins Scripts --}}
     @include('adminlte::plugins', ['type' => 'js'])
